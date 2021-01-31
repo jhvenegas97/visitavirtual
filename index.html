@@ -6,7 +6,7 @@
   <meta name="description" content="Recorrido Virtual Museo Taminango">
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
 
   <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
@@ -67,14 +67,15 @@
     //Cargar cuadro modal al inicio de la página
     $(window).on('load',function(){
         $('#myModal').modal('show');
+        var soundID = "fondo";
+        createjs.Sound.registerSound("sounds/fondo.mp3",soundID);
     });
 
-    function sonido(){
+    function playSonido(){
       var fondo = "fondo";
       var instanciaAudioFondo;
-      createjs.Sound.registerSound({id:"fondo",src:"sounds/fondo.mp3"});
       instanciaAudioFondo = createjs.Sound.createInstance(fondo);
-		  instanciaAudioFondo.volume = 0.3;
+		  instanciaAudioFondo.volume = 0.2;
       instanciaAudioFondo.play({interrupt: createjs.Sound.INTERRUPT_ANY, loop:-1});
     }
 
@@ -86,6 +87,7 @@
     let puntosIni = {0:[0,0,0],1:[0,0,0]};
     let puntosFin = {0:[0,0,0],1:[0,0,0]};
     var tiempoAhora = new Date();
+    var moverse = true;
 
     AFRAME.registerComponent('rotation-reader', {
     tick: function () {
@@ -154,7 +156,7 @@
         else{
           var tiempoFin = new Date();
           //console.log(tiempoAhora - tiempoFin);
-          if((tiempoAhora - tiempoFin) < -6000){
+          if((tiempoAhora - tiempoFin) < -6000 && moverse){
             //console.log(rotation);
             rotacion+=0.08;
             this.el.setAttribute('rotation',{x: rotation.x,y: rotacion,z: rotation.z});
@@ -179,6 +181,7 @@
       var defaultScale = el.getAttribute('scale');
 
       el.addEventListener('mouseenter', function () {
+        moverse = false;
         el.setAttribute('scale', data.scale);
         //var objetoTexto=document.getElementById("texto");
         //objetoTexto.setAttribute("value","Jonathan Venegas");
@@ -295,6 +298,7 @@
       });
 
       el.addEventListener('mouseleave', function () {
+        moverse = true;
         el.setAttribute('scale', {x: 1, y: 1, z: 1});
         let textos = ["Carpinteria", "Tejidos","Imprenta","Herreria","Barniz",
         "Fuente","Horno","Salon","AvzEntradaPrincipal","AvzEntradaSecundaria",
@@ -373,7 +377,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Bienvenido al Museo Virtual</h5>
+        <h5 class="modal-title">Bienvenido al Museo Virtual Casona Taminango</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -382,8 +386,8 @@
         <p>Una experiencia novedosa y a la vanguardia.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" onclick="sonido()" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" onclick="sonido()" class="btn btn-primary" data-dismiss="modal">Continuar</button>
+        <button type="button" onclick="playSonido()" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" onclick="playSonido()" class="btn btn-primary" data-dismiss="modal">Continuar</button>
       </div>
     </div>
   </div>
@@ -468,7 +472,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Herreria</h5>
+        <h5 class="modal-title">Herrería</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
