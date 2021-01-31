@@ -1,0 +1,23 @@
+.modal-content {
+    background: #fdb73a;
+    border-color: #fdb73a;
+    
+}
+
+.modal-header{
+    background: #802f00;
+    border-color:#802f00;
+    color: #fff;
+}
+
+.modal-footer{
+    border-color: #fdb73a;
+}
+
+.rounded{
+    box-shadow: 5px 5px 5px black;
+}
+
+.close{
+    color: #fff;
+}
