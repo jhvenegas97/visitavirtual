@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/styles.css" crossorigin="anonymous">
     <!-- <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script> -->
 
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
     <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
@@ -50,9 +50,9 @@
             init: function() {
 
                 //add image source of hotspot icon
-                this.el.setAttribute("src", "#hotspot");
+                //this.el.setAttribute("src", "#hotspot");
                 //make the icon look at the camera all the time
-                this.el.setAttribute("look-at", "#cam");
+                //this.el.setAttribute("look-at", "#cam");
 
                 var data = this.data;
 
@@ -826,7 +826,7 @@
         <a-text id="textoMolino" font="kelsonsans" value="" width="15" position="7.95 1.8 1" rotation="0 -100 0"></a-text>
 
         <!-- Camera + cursor. -->
-        <a-entity id="rotationCamera" position="0 0 0" camera look-controls="pointerLockEnabled: true;" rotation-reader mouse-cursor>
+        <a-entity id="cam" position="0 0 0" camera look-controls="pointerLockEnabled: true;" rotation-reader mouse-cursor>
             <a-cursor id="cursor" position="0 0 -.6" color="red" animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150" animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500" event-set__mouseenter="_event: mouseenter; color: springgreen"
                 event-set__mouseleave="_event: mouseleave; color: red" raycaster=" objects: .link "></a-cursor>
         </a-entity>
