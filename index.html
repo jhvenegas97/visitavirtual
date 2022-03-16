@@ -1,842 +1,837 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>Recorrido Virtual Museo Taminango</title>
-  <meta name="description" content="Recorrido Virtual Museo Taminango">
+    <meta charset="utf-8">
+    <title>Recorrido Virtual Museo Taminango</title>
+    <meta name="description" content="Recorrido Virtual Museo Taminango">
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/styles.css" crossorigin="anonymous">
-  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css" crossorigin="anonymous">
+    <!-- <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script> -->
 
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
-  <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
-  <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
-  <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-  <script src="https://unpkg.com/aframe-look-at-component@0.5.1/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.5.1/dist/aframe-look-at-component.min.js"></script>
     <script>
-      AFRAME.registerComponent('hotspots',{
-        init:function(){
-            this.el.addEventListener('reloadspots',function(evt){
-            
-            //get the entire current spot group and scale it to 0
-            var currspotgroup=document.getElementById(evt.detail.currspots);
-            currspotgroup.setAttribute("scale","0 0 0");
-            
-            //get the entire new spot group and scale it to 1
-            var newspotgroup=document.getElementById(evt.detail.newspots);
-            newspotgroup.setAttribute("scale","1 1 1");
-          });
-        }
-      });
-      AFRAME.registerComponent('spot',{
-        schema:{
-          linkto:{type:"string",default:""},
-          spotgroup:{type:"string",default:""}
-        },
-        init:function(){
-          
-          //add image source of hotspot icon
-          this.el.setAttribute("src","#hotspot");
-          //make the icon look at the camera all the time
-          this.el.setAttribute("look-at","#cam");
-          
-          var data=this.data;
-          
-          this.el.addEventListener('click',function(){
-            //set the skybox source to the new image as per the spot
-            var sky=document.getElementById("image-360");
-            sky.setAttribute("src",data.linkto);
-            
-            var spotcomp=document.getElementById("spots");
-            var currspots=this.parentElement.getAttribute("id");
-            //create event for spots component to change the spots data
-            spotcomp.emit('reloadspots',{newspots:data.spotgroup,currspots:currspots});
-          });
-        }
-      });
+        AFRAME.registerComponent('hotspots', {
+            init: function() {
+                this.el.addEventListener('reloadspots', function(evt) {
+
+                    //get the entire current spot group and scale it to 0
+                    var currspotgroup = document.getElementById(evt.detail.currspots);
+                    currspotgroup.setAttribute("scale", "0 0 0");
+
+                    //get the entire new spot group and scale it to 1
+                    var newspotgroup = document.getElementById(evt.detail.newspots);
+                    newspotgroup.setAttribute("scale", "1 1 1");
+                });
+            }
+        });
+        AFRAME.registerComponent('spot', {
+            schema: {
+                linkto: {
+                    type: "string",
+                    default: ""
+                },
+                spotgroup: {
+                    type: "string",
+                    default: ""
+                }
+            },
+            init: function() {
+
+                //add image source of hotspot icon
+                this.el.setAttribute("src", "#hotspot");
+                //make the icon look at the camera all the time
+                this.el.setAttribute("look-at", "#cam");
+
+                var data = this.data;
+
+                this.el.addEventListener('click', function() {
+                    //set the skybox source to the new image as per the spot
+                    var sky = document.getElementById("image-360");
+                    sky.setAttribute("src", data.linkto);
+
+                    var spotcomp = document.getElementById("spots");
+                    var currspots = this.parentElement.getAttribute("id");
+                    //create event for spots component to change the spots data
+                    spotcomp.emit('reloadspots', {
+                        newspots: data.spotgroup,
+                        currspots: currspots
+                    });
+                });
+            }
+        });
     </script>
 
 
-  <script type="text/javascript">
-    //Cargar cuadro modal al inicio de la página
-    $(window).on('load',function(){
-        $('#myModal').modal('show');
-        var soundID = "fondo";
-        createjs.Sound.registerSound("sounds/fondo.mp3",soundID);
-    });
+    <script type="text/javascript">
+        let soundJavaScript = new Audio('sounds/lugaresBambuco.mp3');
+        soundJavaScript.volume = 0.1;
+        soundJavaScript.loop = true;
+        soundJavaScript.load();
 
-    function playSonido(){
-      var fondo = "fondo";
-      var instanciaAudioFondo;
-      instanciaAudioFondo = createjs.Sound.createInstance(fondo);
-		  instanciaAudioFondo.volume = 0.2;
-      instanciaAudioFondo.play({interrupt: createjs.Sound.INTERRUPT_ANY, loop:-1});
-    }
+        //Cargar cuadro modal al inicio de la página
+        $(window).on('load', function() {
+            $('#myModal').modal('show');
+            var soundID = "fondo";
+            //createjs.Sound.registerSound("sounds/lugaresBambuco.mp3", soundID);
+        });
 
-    //Variables globales
-    var puntos = 0;
-    var rotacion = 0;
-    var banderaCambiar = true;
-    var movimientoCamara = false;
-    let puntosIni = {0:[0,0,0],1:[0,0,0]};
-    let puntosFin = {0:[0,0,0],1:[0,0,0]};
-    var tiempoAhora = new Date();
-    var moverse = true;
+        $('#salaMadera').click(function(e) {
+            alert(e);
+        });
 
-    AFRAME.registerComponent('rotation-reader', {
-    tick: function () {
-        var rotation = this.el.getAttribute('rotation');
-        //console.log(rotation);
-        //Determinar si la camara esta quieta
-        //Obtener dos puntos iniciales
-        switch(puntos){
-          case 0:
-            puntosIni[0][0]= rotation.x;
-            puntosIni[0][1]= rotation.y;
-            puntosIni[0][2]= rotation.z;
-            break;
-          case 1:
-            puntosIni[1][0]= rotation.x;
-            puntosIni[1][1]= rotation.y;
-            puntosIni[1][2]= rotation.z;
-            break;
-          case 2:
-            puntosFin[0][0]= rotation.x;
-            puntosFin[0][1]= rotation.y;
-            puntosFin[0][2]= rotation.z;
-            break;
-          case 3:
-            puntosFin[1][0]= rotation.x;
-            puntosFin[1][1]= rotation.y;
-            puntosFin[1][2]= rotation.z;
-            break;
+        function playSonido() {
+            /*var fondo = "fondo";
+            var instanciaAudioFondo;
+            instanciaAudioFondo = createjs.Sound.createInstance(fondo);
+            instanciaAudioFondo.volume = 0.2;
+            instanciaAudioFondo.play({
+                interrupt: createjs.Sound.INTERRUPT_ANY,
+                loop: -1
+            });*/
+            soundJavaScript.play();
         }
-        puntos++;
-        if(puntos == 4)
-        {
-          //Comparamos puntos y determinamos si la cámara se ha movido
-          for(let i=0;i<2;i++)
-          {
-            for(let j=0;j<2;j++)
-            {
-              for(let k=0;k<3;k++)
-              {
-                if(puntosIni[i][k]!=puntosFin[j][k])
-                {
-                  movimientoCamara = true;
-                  tiempoAhora = new Date();
-                  break;
+
+        //Variables globales
+        var countHotSpots = 0;
+        var countHotSpotsAnimation = 1;
+        var puntos = 0;
+        var rotacion = 0;
+        var banderaCambiar = true;
+        var movimientoCamara = true;
+        let puntosIni = {
+            0: [0, 0, 0],
+            1: [0, 0, 0]
+        };
+        let puntosFin = {
+            0: [0, 0, 0],
+            1: [0, 0, 0]
+        };
+        var tiempoAhora = new Date();
+        var moverse = true;
+
+        AFRAME.registerComponent('rotation-reader', {
+            tick: function() {
+                var rotation = this.el.getAttribute('rotation');
+                //console.log(rotacion);
+                //Determinar si la camara esta quieta
+                //Obtener dos puntos iniciales
+                switch (puntos) {
+                    case 0:
+                        puntosIni[0][0] = rotation.x;
+                        puntosIni[0][1] = rotation.y;
+                        puntosIni[0][2] = rotation.z;
+                        break;
+                    case 1:
+                        puntosIni[1][0] = rotation.x;
+                        puntosIni[1][1] = rotation.y;
+                        puntosIni[1][2] = rotation.z;
+                        break;
+                    case 2:
+                        puntosFin[0][0] = rotation.x;
+                        puntosFin[0][1] = rotation.y;
+                        puntosFin[0][2] = rotation.z;
+                        break;
+                    case 3:
+                        puntosFin[1][0] = rotation.x;
+                        puntosFin[1][1] = rotation.y;
+                        puntosFin[1][2] = rotation.z;
+                        break;
                 }
-                else{
-                  movimientoCamara = false;
+                puntos++;
+                if (puntos == 4) {
+                    //Comparamos puntos y determinamos si la cámara se ha movido
+                    for (let i = 0; i < 2; i++) {
+                        for (let j = 0; j < 2; j++) {
+                            for (let k = 0; k < 3; k++) {
+                                if (puntosIni[i][k] != puntosFin[j][k]) {
+                                    movimientoCamara = true;
+                                    tiempoAhora = new Date();
+                                    break;
+                                } else {
+                                    movimientoCamara = false;
+                                }
+                            } //For final
+                            if (movimientoCamara) {
+                                break;
+                            }
+                        } //For intermedio
+                        if (movimientoCamara) {
+                            break;
+                        }
+                    } //For inicial
+                    puntos = 0;
+                } //if puntos
+                //console.log(movimientoCamara);
+                //console.log(tiempoAhora);
+                if (!movimientoCamara) {
+                    var tiempoFin = new Date();
+                    //console.log(tiempoAhora - tiempoFin);
+                    if ((tiempoAhora - tiempoFin) < -6000 && moverse) {
+                        //console.log(rotation);
+                        rotacion += 0.08;
+                        this.el.setAttribute('rotation', {
+                            x: rotation.x,
+                            y: rotacion,
+                            z: rotation.z
+                        });
+                        if (rotacion >= 360) {
+                            console.log("360");
+                            rotacion = 0;
+                        }
+                        //var objetoCursor = document.getElementById("cursor");
+                        //console.log(objetoCursor.getAttribute('position'));
+                    }
                 }
-              }//For final
-              if(movimientoCamara)
-              {
-                break;
-              }
-            }//For intermedio
-            if(movimientoCamara){
-              break;
+                //console.log(rotation);
             }
-          }//For inicial
-          puntos = 0;
-        }//if puntos
-        //console.log(movimientoCamara);
-        //console.log(tiempoAhora);
-        if(movimientoCamara){
+        });
 
-        }
-        else{
-          var tiempoFin = new Date();
-          //console.log(tiempoAhora - tiempoFin);
-          if((tiempoAhora - tiempoFin) < -6000 && moverse){
-            //console.log(rotation);
-            rotacion+=0.08;
-            this.el.setAttribute('rotation',{x: rotation.x,y: rotacion,z: rotation.z});
-            if(rotacion == 360){
-              rotacion = 0;
+        AFRAME.registerComponent('modificar', {
+            schema: {
+                scale: {
+                    default: '1 1 1'
+                }
+            },
+            init: function() {
+                var data = this.data;
+                var el = this.el; // <a-box>
+                var defaultScale = el.getAttribute('scale');
+
+                el.addEventListener('mouseenter', function() {
+                    //moverse = false;
+                    if (movimientoCamara) {
+                        el.setAttribute('scale', data.scale);
+                        //var objetoTexto=document.getElementById("texto");
+                        //objetoTexto.setAttribute("value","Jonathan Venegas");
+                        //$('#modalTejidos').modal('show');
+                        //console.log($('#salaMadera').position);
+                        //$('#modalCarpinteria').modal('show');
+                        var elementoActual = this.parentElement.getAttribute("id");
+                        switch (elementoActual) {
+                            case "salaMadera":
+                                $('#modalCarpinteria').modal('show');
+                                var objetoTexto = document.getElementById("textoCarpinteria");
+                                objetoTexto.setAttribute("value", "Talla y Torno");
+                                break;
+                            case "salaTejidos":
+                                $('#modalTejidos').modal('show');
+                                var objetoTexto = document.getElementById("textoTejidos");
+                                objetoTexto.setAttribute("value", "Telares y Tejidos");
+                                break;
+                            case "salaImprenta":
+                                $('#modalImprenta').modal('show');
+                                var objetoTexto = document.getElementById("textoImprenta");
+                                objetoTexto.setAttribute("value", "Imprenta de tipos griegos");
+                                break;
+                            case "salaHerreria":
+                                $('#modalHerreria').modal('show');
+                                var objetoTexto = document.getElementById("textoHerreria");
+                                objetoTexto.setAttribute("value", "Herreria");
+                                break;
+                            case "salaPajaToquilla":
+                                $('#modalPajaToquilla').modal('show');
+                                var objetoTexto = document.getElementById("textoPajaToquilla");
+                                objetoTexto.setAttribute("value", "Paja Toquilla");
+                                break;
+                            case "salaBarniz":
+                                $('#modalBarniz').modal('show');
+                                var objetoTexto = document.getElementById("textoBarniz");
+                                objetoTexto.setAttribute("value", "Barniz de Pasto");
+                                break;
+                            case "fuente":
+                                $('#modalFuente').modal('show');
+                                var objetoTexto = document.getElementById("textoFuente");
+                                objetoTexto.setAttribute("value", "Fuente de Piedra");
+                                break;
+                            case "horno":
+                                $('#modalHorno').modal('show');
+                                var objetoTexto = document.getElementById("textoHorno");
+                                objetoTexto.setAttribute("value", "Horno de Barro");
+                                break;
+                            case "salon-audiciones-hotspot":
+                                $('#modalSalon').modal('show');
+                                var objetoTexto = document.getElementById("textoSalon");
+                                objetoTexto.setAttribute("value", "Museo Taminango");
+                                var objetoTexto = document.getElementById("textoSalon2");
+                                objetoTexto.setAttribute("value", "Centro Cultural");
+                                var miVideo = document.getElementById("videoSalon");
+                                miVideo.play();
+                                soundJavaScript.pause();
+                                break;
+                            case "linkAvzSalaPrincipal":
+                                var objetoTexto = document.getElementById("textoAvzEntradaPrincipal");
+                                objetoTexto.setAttribute("value", "Avanzar");
+                                break;
+                            case "linkAvzSalaSecundaria":
+                                var objetoTexto = document.getElementById("textoAvzEntradaSecundaria");
+                                objetoTexto.setAttribute("value", "Avanzar");
+                                break;
+                            case "linkRetroSalaSecundaria":
+                                var objetoTexto = document.getElementById("textoRetroEntradaSecundaria");
+                                objetoTexto.setAttribute("value", "Retroceder");
+                                break;
+                            case "linkAvzHerbario":
+                                var objetoTexto = document.getElementById("textoAvzHerbario");
+                                objetoTexto.setAttribute("value", "Avanzar");
+                                break;
+                            case "linkRetroHerbario":
+                                var objetoTexto = document.getElementById("textoRetroHerbario");
+                                objetoTexto.setAttribute("value", "Retroceder");
+                                break;
+                            case "salaPaileria":
+                                $('#modalPaileria').modal('show');
+                                var objetoTexto = document.getElementById("textoPaileria");
+                                objetoTexto.setAttribute("value", "Paileria");
+                                break;
+                            case "plantasMedicinales":
+                                $('#modalPlantas').modal('show');
+                                var objetoTexto = document.getElementById("textoPlantas");
+                                objetoTexto.setAttribute("value", "Coleccion Etnobotanica");
+                                break;
+                            case "linkAvzSalon":
+                                var objetoTexto = document.getElementById("textoAvzSalon");
+                                objetoTexto.setAttribute("value", "Avanzar");
+                                break;
+                            case "linkRetroSalon":
+                                var objetoTexto = document.getElementById("textoRetroSalon");
+                                objetoTexto.setAttribute("value", "Retroceder");
+                                break;
+                            case "linkRetroHorno":
+                                var objetoTexto = document.getElementById("textoRetroHorno");
+                                objetoTexto.setAttribute("value", "Retroceder");
+                                break;
+                            case "entrada":
+                                var objetoTexto = document.getElementById("textoEntrada");
+                                objetoTexto.setAttribute("value", "Inicio");
+                                break;
+                            case "horno":
+                                var objetoTexto = document.getElementById("textoHorno");
+                                objetoTexto.setAttribute("value", "Horno de Barro");
+                                break;
+                            case "molinoPiedra":
+                                $('#modalMolino').modal('show');
+                                var objetoTexto = document.getElementById("textoMolino");
+                                objetoTexto.setAttribute("value", "Molino de Piedra");
+                                break;
+                        }
+                    }
+                });
+
+                el.addEventListener('mouseleave', function() {
+                    //moverse = true;
+                    soundJavaScript.play();
+                    el.setAttribute('scale', {
+                        x: 1,
+                        y: 1,
+                        z: 1
+                    });
+                    let textos = ["Carpinteria", "Tejidos", "Imprenta", "Herreria", "Barniz",
+                        "Fuente", "Horno", "Salon", "AvzEntradaPrincipal", "AvzEntradaSecundaria",
+                        "RetroEntradaSecundaria", "PajaToquilla", "AvzHerbario", "RetroHerbario",
+                        "Paileria", "Plantas", "AvzSalon", "RetroSalon", "Salon2", "Entrada", "RetroHorno",
+                        "Molino"
+                    ]
+                    for (let i = 0; i < 22; i++) {
+                        var textoCompleto;
+                        textoCompleto = "texto" + textos[i];
+                        var objetoTexto = document.getElementById(textoCompleto);
+                        objetoTexto.setAttribute("value", "");
+                    }
+                    $('#modalTejidos').modal('hide');
+                    $('#modalCarpinteria').modal('hide');
+                    $('#modalImprenta').modal('hide');
+                    $('#modalHerreria').modal('hide');
+                    $('#modalBarniz').modal('hide');
+                    $('#modalFuente').modal('hide');
+                    $('#modalHorno').modal('hide');
+                    $('#modalSalon').modal('hide');
+                    $('#modalPajaToquilla').modal('hide');
+                    $('#modalPaileria').modal('hide');
+                    $('#modalPlantas').modal('hide');
+                    $('#modalMolino').modal('hide');
+                    var miVideo = document.getElementById("videoSalon");
+                    miVideo.pause();
+                });
+            },
+            tick: function() {
+                //console.log(countHotSpots);
+                var el = this.el;
+                //console.log(el.getAttribute('scale'));
+                countHotSpots++;
+                if (countHotSpots < 2000) {
+                    countHotSpotsAnimation += 0.0001;
+                } else if (countHotSpots >= 2000 && countHotSpots < 4000) {
+                    countHotSpotsAnimation -= 0.0001;
+                } else {
+                    countHotSpots = 0;
+                }
+                el.setAttribute('scale', {
+                    x: countHotSpotsAnimation,
+                    y: countHotSpotsAnimation,
+                    z: countHotSpotsAnimation
+                });
+
             }
-            var objetoCursor = document.getElementById("cursor");
-            //console.log(objetoCursor.getAttribute('position'));
-          }
-        }
-        //console.log(rotation);
-      }
-    });
+        });
 
-    AFRAME.registerComponent('modificar', {
-    schema: {
-      scale: {default: '1 1 1'}
-    },
-    init: function () {
-      var data = this.data;
-      var el = this.el;  // <a-box>
-      var defaultScale = el.getAttribute('scale');
+        AFRAME.registerComponent('cambiar', {
+            schema: {
+                scale: {
+                    default: '1 1 1'
+                }
+            },
+            init: function() {
+                var data = this.data;
+                var el = this.el; // <a-box>
+                //var defaultScale = el.getAttribute('scale');
+                //console.log(data);
+                el.addEventListener('click', function() {
+                    var objetoFondo = document.getElementById("image-360");
+                    /*if(banderaCambiar){
+                      objetoFondo.setAttribute("src","#fondo-entrada-principal");
+                      //console.log(banderaCambiar);
+                    }
+                    else{
+                      objetoFondo.setAttribute("src","#fondo-entrada-secundaria");
+                     //console.log(banderaCambiar);
+                    }
+                    banderaCambiar = !banderaCambiar;*/
+                });
+            }
+        });
+    </script>
 
-      el.addEventListener('mouseenter', function () {
-        moverse = false;
-        el.setAttribute('scale', data.scale);
-        //var objetoTexto=document.getElementById("texto");
-        //objetoTexto.setAttribute("value","Jonathan Venegas");
-        //$('#modalTejidos').modal('show');
-        //console.log($('#salaMadera').position);
-        //$('#modalCarpinteria').modal('show');
-        var elementoActual=this.parentElement.getAttribute("id");
-        switch(elementoActual){
-          case "salaMadera":
-          $('#modalCarpinteria').modal('show');
-          var objetoTexto=document.getElementById("textoCarpinteria");
-          objetoTexto.setAttribute("value","Talla y Torno");
-          break;
-          case "salaTejidos":
-          $('#modalTejidos').modal('show');
-          var objetoTexto=document.getElementById("textoTejidos");
-          objetoTexto.setAttribute("value","Telares y Tejidos");
-          break;
-          case "salaImprenta":
-          $('#modalImprenta').modal('show');
-          var objetoTexto=document.getElementById("textoImprenta");
-          objetoTexto.setAttribute("value","Imprenta de tipos griegos");
-          break;
-          case "salaHerreria":
-          $('#modalHerreria').modal('show');
-          var objetoTexto=document.getElementById("textoHerreria");
-          objetoTexto.setAttribute("value","Herreria");
-          break;
-          case "salaPajaToquilla":
-          $('#modalPajaToquilla').modal('show');
-          var objetoTexto=document.getElementById("textoPajaToquilla");
-          objetoTexto.setAttribute("value","Paja Toquilla");
-          break;
-          case "salaBarniz":
-          $('#modalBarniz').modal('show');
-          var objetoTexto=document.getElementById("textoBarniz");
-          objetoTexto.setAttribute("value","Barniz de Pasto");
-          break;
-          case "fuente":
-          $('#modalFuente').modal('show');
-          var objetoTexto=document.getElementById("textoFuente");
-          objetoTexto.setAttribute("value","Fuente de Piedra");
-          break;
-          case "horno":
-          $('#modalHorno').modal('show');
-          var objetoTexto=document.getElementById("textoHorno");
-          objetoTexto.setAttribute("value","Horno de Barro");
-          break;
-          case "salon-audiciones-hotspot":
-          $('#modalSalon').modal('show');
-          var objetoTexto=document.getElementById("textoSalon");
-          objetoTexto.setAttribute("value","Museo Taminango");
-          var objetoTexto=document.getElementById("textoSalon2");
-          objetoTexto.setAttribute("value","Centro Cultural");
-          var miVideo = document.getElementById("videoSalon");
-          miVideo.play();
-          break;
-          case "linkAvzSalaPrincipal":
-          var objetoTexto=document.getElementById("textoAvzEntradaPrincipal");
-          objetoTexto.setAttribute("value","Avanzar");
-          break;
-          case "linkAvzSalaSecundaria":
-          var objetoTexto=document.getElementById("textoAvzEntradaSecundaria");
-          objetoTexto.setAttribute("value","Avanzar");
-          break;
-          case "linkRetroSalaSecundaria":
-          var objetoTexto=document.getElementById("textoRetroEntradaSecundaria");
-          objetoTexto.setAttribute("value","Retroceder");
-          break;
-          case "linkAvzHerbario":
-          var objetoTexto=document.getElementById("textoAvzHerbario");
-          objetoTexto.setAttribute("value","Avanzar");
-          break;
-          case "linkRetroHerbario":
-          var objetoTexto=document.getElementById("textoRetroHerbario");
-          objetoTexto.setAttribute("value","Retroceder");
-          break;
-          case "salaPaileria":
-          $('#modalPaileria').modal('show');
-          var objetoTexto=document.getElementById("textoPaileria");
-          objetoTexto.setAttribute("value","Paileria");
-          break;
-          case "plantasMedicinales":
-          $('#modalPlantas').modal('show');
-          var objetoTexto=document.getElementById("textoPlantas");
-          objetoTexto.setAttribute("value","Coleccion Etnobotanica");
-          break;
-          case "linkAvzSalon":
-          var objetoTexto=document.getElementById("textoAvzSalon");
-          objetoTexto.setAttribute("value","Avanzar");
-          break;
-          case "linkRetroSalon":
-          var objetoTexto=document.getElementById("textoRetroSalon");
-          objetoTexto.setAttribute("value","Retroceder");
-          break;
-          case "linkRetroHorno":
-          var objetoTexto=document.getElementById("textoRetroHorno");
-          objetoTexto.setAttribute("value","Retroceder");
-          break;
-          case "entrada":
-          var objetoTexto=document.getElementById("textoEntrada");
-          objetoTexto.setAttribute("value","Inicio");
-          break;
-          case "horno":
-          var objetoTexto=document.getElementById("textoHorno");
-          objetoTexto.setAttribute("value","Horno de Barro");
-          break;
-          case "molinoPiedra":
-          $('#modalMolino').modal('show');
-          var objetoTexto=document.getElementById("textoMolino");
-          objetoTexto.setAttribute("value","Molino de Piedra");
-          break;
-        }
-      });
-
-      el.addEventListener('mouseleave', function () {
-        moverse = true;
-        el.setAttribute('scale', {x: 1, y: 1, z: 1});
-        let textos = ["Carpinteria", "Tejidos","Imprenta","Herreria","Barniz",
-        "Fuente","Horno","Salon","AvzEntradaPrincipal","AvzEntradaSecundaria",
-        "RetroEntradaSecundaria","PajaToquilla","AvzHerbario","RetroHerbario",
-        "Paileria","Plantas","AvzSalon","RetroSalon","Salon2","Entrada","RetroHorno",
-        "Molino"]
-        for(let i=0;i<22;i++){
-          var textoCompleto;
-          textoCompleto = "texto"+textos[i];
-          var objetoTexto=document.getElementById(textoCompleto);
-          objetoTexto.setAttribute("value","");
-        }
-        $('#modalTejidos').modal('hide');
-        $('#modalCarpinteria').modal('hide');
-        $('#modalImprenta').modal('hide');
-        $('#modalHerreria').modal('hide');
-        $('#modalBarniz').modal('hide');
-        $('#modalFuente').modal('hide');
-        $('#modalHorno').modal('hide');
-        $('#modalSalon').modal('hide');
-        $('#modalPajaToquilla').modal('hide');
-        $('#modalPaileria').modal('hide');
-        $('#modalPlantas').modal('hide');
-        $('#modalMolino').modal('hide');
-        var miVideo = document.getElementById("videoSalon");
-        miVideo.pause();
-      });
-    }
-  });
-  
-  AFRAME.registerComponent('cambiar', {
-    schema: {
-      scale: {default: '1 1 1'}
-    },
-    init: function () {
-      var data = this.data;
-      var el = this.el;  // <a-box>
-      //var defaultScale = el.getAttribute('scale');
-      //console.log(data);
-      el.addEventListener('click', function () {
-        var objetoFondo=document.getElementById("image-360");
-        /*if(banderaCambiar){
-          objetoFondo.setAttribute("src","#fondo-entrada-principal");
-          //console.log(banderaCambiar);
-        }
-        else{
-          objetoFondo.setAttribute("src","#fondo-entrada-secundaria");
-         //console.log(banderaCambiar);
-        }
-        banderaCambiar = !banderaCambiar;*/
-      });
-    }
-  });
-  </script>
-
-  <!-- Imagen Template -->
-  <script id="link" type="text/html">
-    <a-image
-     class="link"
-     geometry="primitive: plane; height: 1; width: 1"
-     material="shader: flat; src: ${thumb}"
-     
-     modificar="scale: 1.3 1.3 1"
-
-     cambiar="material.src : ${src}"
-
-     proxy-event="event: click; to: #image-360; as: fade"
-     
-    ></a-image>
-    <!--event-set__click="_target: #image-360; _delay: 300; material.src: ${src}" probar que se puede acceder a otros atributos como src que están definidos luego en la entidads-->
-    <!--sound="on: mouseenter; src: #mouseenter-sound"-->
-  </script>
+    <!-- Imagen Template -->
+    <script id="link" type="text/html">
+        <a-image id="hotSpotsPoints" class="link" geometry="primitive: plane; height: 1; width: 1" material="shader: flat; src: ${thumb}" modificar="scale: 1.3 1.3 1" cambiar="material.src : ${src}" proxy-event="event: click; to: #image-360; as: fade"></a-image>
+        <!--event-set__click="_target: #image-360; _delay: 300; material.src: ${src}" probar que se puede acceder a otros atributos como src que están definidos luego en la entidads-->
+        <!--sound="on: mouseenter; src: #mouseenter-sound"-->
+    </script>
 </head>
+
 <body>
-  <div id="myModal" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Bienvenido al Museo Virtual Casona Taminango</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="myModal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bienvenido al Museo Virtual Casona Taminango</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p>Una experiencia novedosa y a la vanguardia.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="playSonido()" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" onclick="playSonido()" class="btn btn-primary" data-dismiss="modal">Continuar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="modalTejidos" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Telares y Tejidos</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Dos telares son el centro de la exhibición: la guanga o telar 
-          de mujer y el telar  horizontal o de hombre, para producir el textil, sean bayetas, 
-          bayetillas, cobijas o capelladas de alpargata, en todo caso prima el uso de la lana de oveja, 
-          en un proceso dispendioso que transforma la lana en hilos y textiles.</p>
-        <div class="text-center">
-          <img width="60%" src="images/sala_telares_tejidos.jpg" class="rounded" alt="Imagen Lana">
+                </div>
+                <div class="modal-body">
+                    <p>Una experiencia novedosa y a la vanguardia.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="playSonido()" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" onclick="playSonido()" class="btn btn-primary" data-dismiss="modal">Continuar</button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalCarpinteria" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Talla y Torno</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalTejidos" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Telares y Tejidos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Reproduce el taller del maestro ebanista: sus herramientas  maquinas e insumos,  
-          que por el carácter tradicional pertenecen a distintas épocas, tantas cuantas generaciones trabajen 
-          en el taller, además objetos en proceso y terminados que hablan del la herencia de arte colonial 
-          mas arraigada en el sur.</p>
-        <div class="text-center">
-          <img width="60%" src="images/sala_talla_torno.jpg" class="rounded" alt="Imagen Carpinteria">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Dos telares son el centro de la exhibición: la guanga o telar de mujer y el telar horizontal o de hombre, para producir el textil, sean bayetas, bayetillas, cobijas o capelladas de alpargata, en todo caso prima el uso de la lana de
+                        oveja, en un proceso dispendioso que transforma la lana en hilos y textiles.</p>
+                    <div class="text-center">
+                        <img width="60%" src="images/sala_telares_tejidos.jpg" class="rounded" alt="Imagen Lana">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalImprenta" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Imprenta de Tipos Griegos del Dr. Leopoldo López Álvarez</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalCarpinteria" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Talla y Torno</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Exhibe la colosal obra del humanista, manuscritos originales e impresos, 
-          la colección de boletines de estudios históricos, imprentas de tipos griegos utilizadas para la impresión de sus traducciones de los clásicos 
-          de Homero Virgilio y Esquilo, junto a tipos, viñetas y cuñas en sus respectivos chibaletes.</p>
-        <div class="text-center">
-          <img width="90%" src="images/sala_imprenta.jpg" class="rounded" alt="Imagen Carpinteria">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Reproduce el taller del maestro ebanista: sus herramientas maquinas e insumos, que por el carácter tradicional pertenecen a distintas épocas, tantas cuantas generaciones trabajen en el taller, además objetos en proceso y terminados
+                        que hablan del la herencia de arte colonial mas arraigada en el sur.</p>
+                    <div class="text-center">
+                        <img width="60%" src="images/sala_talla_torno.jpg" class="rounded" alt="Imagen Carpinteria">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalHerreria" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Herrería</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalImprenta" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Imprenta de Tipos Griegos del Dr. Leopoldo López Álvarez</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Antigua y clásica, compuesta de fuelle, fragua, tenazas, 
-          cinceles, yunques etc.  Para moldear a golpe de maceta el metal ardiente, 
-          forjan herrajes y herramientas  para  satisfacer la demanda de un pueblo laborioso.</p>
-        <div class="text-center">
-          <img width="95%" src="images/la_herreria.jpg" class="rounded" alt="Imagen Carpinteria">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Exhibe la colosal obra del humanista, manuscritos originales e impresos, la colección de boletines de estudios históricos, imprentas de tipos griegos utilizadas para la impresión de sus traducciones de los clásicos de Homero Virgilio
+                        y Esquilo, junto a tipos, viñetas y cuñas en sus respectivos chibaletes.</p>
+                    <div class="text-center">
+                        <img width="90%" src="images/sala_imprenta.jpg" class="rounded" alt="Imagen Carpinteria">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalPajaToquilla" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Tejidos en Paja Toquilla o Iraca</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalHerreria" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Herrería</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Un rincón de la casa y un espacio de tiempo libre se requiere para tejer Sombreros y todo lo 
-          imaginado en Sandona, Linares, la Unión, El Tambo, la Florida y otros municipios de Nariño, son necesarios 
-          elementos como el ripiador, moldes, mesas y bancos adaptados al proceso de tejeduría.</p>
-        <div class="text-center">
-          <img width="95%" src="images/paja_toquilla.jpg" class="rounded" alt="Imagen Paja Toquilla">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Antigua y clásica, compuesta de fuelle, fragua, tenazas, cinceles, yunques etc. Para moldear a golpe de maceta el metal ardiente, forjan herrajes y herramientas para satisfacer la demanda de un pueblo laborioso.</p>
+                    <div class="text-center">
+                        <img width="95%" src="images/la_herreria.jpg" class="rounded" alt="Imagen Carpinteria">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalBarniz" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Barniz de Pasto - Mopa Mopa</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalPajaToquilla" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tejidos en Paja Toquilla o Iraca</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Técnica aborigen tan antigua como la ciudad que lleva su nombre, 
-          usada para impermeabilizar recipientes de madera y cerámica, aplicando en forma de 
-          membrana una resina de vivos colores, trazos con seguetas filosas con tal destreza 
-          que pareciera pintura.</p>
-        <div class="text-center">
-          <img width="80%" src="images/barniz-min.jpg" class="rounded" alt="Imagen Carpinteria">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Un rincón de la casa y un espacio de tiempo libre se requiere para tejer Sombreros y todo lo imaginado en Sandona, Linares, la Unión, El Tambo, la Florida y otros municipios de Nariño, son necesarios elementos como el ripiador, moldes,
+                        mesas y bancos adaptados al proceso de tejeduría.</p>
+                    <div class="text-center">
+                        <img width="95%" src="images/paja_toquilla.jpg" class="rounded" alt="Imagen Paja Toquilla">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalFuente" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">La Mona de la Pila de Rumipamba</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalBarniz" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Barniz de Pasto - Mopa Mopa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">La mona de la pila de Rumipamba, es una pieza de la época de 
-          la colonia española, que correspondía a la plaza con su nombre, la parte superior o 
-          la mona salvada y donada por la familia Trujillo, las piletas donadas por la familia 
-          Morillo de la Cruz Nariño y la base suministrada por el Municipio de Pasto, un 
-          conjunto armado por el maestro Cardenio Narváez en el patio de la Casona.</p>
-        <div class="text-center">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Técnica aborigen tan antigua como la ciudad que lleva su nombre, usada para impermeabilizar recipientes de madera y cerámica, aplicando en forma de membrana una resina de vivos colores, trazos con seguetas filosas con tal destreza
+                        que pareciera pintura.</p>
+                    <div class="text-center">
+                        <img width="80%" src="images/barniz-min.jpg" class="rounded" alt="Imagen Carpinteria">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalPaileria" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Pailería</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalFuente" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">La Mona de la Pila de Rumipamba</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Trasladada de “la calle de la pailería en Túquerres”, 
-          donde se fundieron campanas, olletas, pailas y estribos y todo tipo de objetos 
-          en cobre y bronce,  lo componen  fuelle, crisoles, torno , piedras de moler, 
-          moldes de arcilla y productos terminados y en proceso.</p>
-        <div class="text-center">
-          <img width="80%" src="images/paila.jpg" class="rounded" alt="Imagen Paileria">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">La mona de la pila de Rumipamba, es una pieza de la época de la colonia española, que correspondía a la plaza con su nombre, la parte superior o la mona salvada y donada por la familia Trujillo, las piletas donadas por la familia Morillo
+                        de la Cruz Nariño y la base suministrada por el Municipio de Pasto, un conjunto armado por el maestro Cardenio Narváez en el patio de la Casona.</p>
+                    <div class="text-center">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalPlantas" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Colección Etnobotánica</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalPaileria" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pailería</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Una colección de plantas de uso medicinal, ornamental y 
-          artesanal componen la colección etnobotánica, buscando recuperar su uso popular, 
-          composición científica y las indicaciones para su aprovechamiento popular y tradicional.
-        </p>
-        <h6><a href="https://museotaminango.com/wp-content/uploads/2020/12/PlantasMedicinales.pdf" target="_blank">Saber más</a></h6>
-        <div class="text-center">
-          
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Trasladada de “la calle de la pailería en Túquerres”, donde se fundieron campanas, olletas, pailas y estribos y todo tipo de objetos en cobre y bronce, lo componen fuelle, crisoles, torno , piedras de moler, moldes de arcilla y productos
+                        terminados y en proceso.</p>
+                    <div class="text-center">
+                        <img width="80%" src="images/paila.jpg" class="rounded" alt="Imagen Paileria">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalHorno" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Horno de Barro</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalPlantas" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Colección Etnobotánica</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">No solo de barro, también de piedra pómez, panela, vidrio molido, 
-          hueso, etc. Para conservar la temperatura entre el cielo y el suelo y producir el pan de 
-          maíz, yuca, achira y trigo,  dependiendo de la zona,  si fuese Pasto entonces serán  
-          allulllas, pambazos, rosquillas, suspiros…</p>
-        <div class="text-center">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Una colección de plantas de uso medicinal, ornamental y artesanal componen la colección etnobotánica, buscando recuperar su uso popular, composición científica y las indicaciones para su aprovechamiento popular y tradicional.
+                    </p>
+                    <h6><a href="https://museotaminango.com/wp-content/uploads/2020/12/PlantasMedicinales.pdf" target="_blank">Saber más</a></h6>
+                    <div class="text-center">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-<div id="modalSalon" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Centro Cultural Museo Taminango</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <div id="modalHorno" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Horno de Barro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify"></p>
-        <div class="text-center">
-          <video id="videoSalon" width="90%" controls>
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">No solo de barro, también de piedra pómez, panela, vidrio molido, hueso, etc. Para conservar la temperatura entre el cielo y el suelo y producir el pan de maíz, yuca, achira y trigo, dependiendo de la zona, si fuese Pasto entonces
+                        serán allulllas, pambazos, rosquillas, suspiros…</p>
+                    <div class="text-center">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalSalon" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Centro Cultural Museo Taminango</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify"></p>
+                    <div class="text-center">
+                        <video id="videoSalon" width="90%" controls>
             <source src="videos/videoCasona.mp4" type="video/mp4">
           Your browser does not support the video tag.
           </video>
-          <!--<img width="80%" src="images/paja_toquilla.jpg" class="rounded" alt="Imagen Paja Toquilla">-->
-        </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
-    </div>
-  </div>
-</div>
+                        <!--<img width="80%" src="images/paja_toquilla.jpg" class="rounded" alt="Imagen Paja Toquilla">-->
+                    </div>
+                </div>
+                <div class="modal-footer">
 
-<div id="modalMolino" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Molino de Piedra</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalMolino" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Molino de Piedra</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        <p class="text-justify">Trasladado de la vereda el molino del municipio de Yacuanquer, 
-          Nariño de vocación triguera cultivo el establecimiento de los molinos, 
-          que con la industrialización y la importación de trigo desaparecieron.</p>
-        <div class="text-center">
-          <img width="80%" src="images/molino.jpg" class="rounded" alt="Imagen Molino">
+                </div>
+                <div class="modal-body">
+                    <p class="text-justify">Trasladado de la vereda el molino del municipio de Yacuanquer, Nariño de vocación triguera cultivo el establecimiento de los molinos, que con la industrialización y la importación de trigo desaparecieron.</p>
+                    <div class="text-center">
+                        <img width="80%" src="images/molino.jpg" class="rounded" alt="Imagen Molino">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        
-      </div>
     </div>
-  </div>
-</div>
 
-  <a-scene>
-    <a-assets>
-      <img id="fotografia" src="images/circulo.png">
-      <img id="imgMadera" src="images/sala_carpinteria.jpg">
-      <img id="desviacion" src="images/desviacion.png">
-      <img id="desviacion_izq" src="images/desviacion_izq.png">
-      <img id="inicioRecorrido" src="images/inicio.png">
-      <img id="fondo-entrada-principal" src="images/entrada-principal-min.jpg">
-      <img id="fondo-entrada-secundaria" src="images/entrada-secundaria-min.jpg">
-      <img id="fondo-salon-audiciones" src="images/salon-audiciones-min.jpg">
-      <img id="fondo-herbario" src="images/herbario-min.jpg">
-      <img id="fondo-horno" src="images/horno-min.jpg">
-      <audio id="click-sound" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg"></audio>
-      <audio id="mouseenter-sound" crossorigin="anonymous" src="sounds/cuy.mp3"></audio>
-      <audio id="hotspot-sound" crossorigin="anonymous" src="sounds/golpes_puerta.mp3"></audio>
-      <audio id="hotspot-sound-regresar" crossorigin="anonymous" src="sounds/golpes_puerta_corto.mp3"></audio>
-    </a-assets>
+    <a-scene>
+        <a-assets>
+            <img id="fotografia" src="images/circulo.png">
+            <img id="imgMadera" src="images/sala_carpinteria.jpg">
+            <img id="desviacion" src="images/desviacion.png">
+            <img id="desviacion_izq" src="images/desviacion_izq.png">
+            <img id="inicioRecorrido" src="images/inicio.png">
+            <img id="fondo-entrada-principal" src="images/entrada-principal-min.jpg">
+            <img id="fondo-entrada-secundaria" src="images/entrada-secundaria-min.jpg">
+            <img id="fondo-salon-audiciones" src="images/salon-audiciones-min.jpg">
+            <img id="fondo-herbario" src="images/herbario-min.jpg">
+            <img id="fondo-horno" src="images/horno-min.jpg">
+            <audio id="click-sound" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg"></audio>
+            <audio id="mouseenter-sound" crossorigin="anonymous" src="sounds/cuy.mp3"></audio>
+            <audio id="hotspot-sound" crossorigin="anonymous" src="sounds/golpes_puerta.mp3"></audio>
+            <audio id="hotspot-sound-regresar" crossorigin="anonymous" src="sounds/golpes_puerta_corto.mp3"></audio>
+        </a-assets>
 
-    <a-sky
-     id="image-360" rotation="0 100 0" radius="10" src="#fondo-entrada-principal"
-     animation__fade="property: components.material.material.color; type: color; from: #FFF; to #000; dur: 300; startEvents: fade"
-     animation__fadeback="property: components.material.material.color; type: color; from: #000; to: #FFF; dur: 300; startEvents: animationcomplete__fade"
-    ></a-sky>
+        <a-sky id="image-360" rotation="0 100 0" radius="10" src="#fondo-entrada-principal" animation__fade="property: components.material.material.color; type: color; from: #FFF; to #000; dur: 300; startEvents: fade" animation__fadeback="property: components.material.material.color; type: color; from: #000; to: #FFF; dur: 300; startEvents: animationcomplete__fade"></a-sky>
 
-    <a-entity id="spots" hotspots>
-      <a-entity id="group-point1">
-        <!--Punto Zona Bajo Imprenta-->
-        <a-entity id="salaMadera" layout="type: line; margin: 1.5" position="-1.5 -1 -8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <!--Punto Lanas y Tejidos-->
-        <a-entity id="salaTejidos" layout="type: line; margin: 1.5" position="5.1 -0.8 -8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <!--Punto Imprenta-->
-        <a-entity id="salaImprenta" layout="type: line; margin: 1.5" position="-1.1 4 -8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <!--Punto Herreria-->
-        <a-entity id="salaHerreria" layout="type: line; margin: 1.5" position="3.5 -2.3 3.4" rotation="0 90 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <!--Punto PajaToquilla-->
-        <a-entity id="salaPajaToquilla" layout="type: line; margin: 1.5" position="5 -1.8 7.7" rotation="0 80 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <!--Punto Moverse-->
-        <a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-entrada-secundaria;spotgroup:group-point2" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
-        <!--<a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-herbario;spotgroup:group-point3" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>-->
-        <!--<a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-horno;spotgroup:group-point5" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>-->
-        <!--<a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-salon-audiciones;spotgroup:group-point4" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>-->
-      </a-entity>
-      <a-entity id="group-point2" scale="0 0 0">
-        <a-entity id="linkAvzSalaSecundaria" spot="linkto:#fondo-herbario;spotgroup:group-point3" layout="type: line; margin: 1.5" position="-0.1 -0.8 5" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
-        <a-entity id="linkRetroSalaSecundaria" spot="linkto:#fondo-entrada-principal;spotgroup:group-point1" layout="type: line; margin: 1.5" position="-1 -1.8 -6" rotation="15 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
-        <a-entity id="fuente" layout="type: line; margin: 1.5" position="-1 3.3 -6" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <a-entity id="salaBarniz" layout="type: line; margin: 1.5" position="-6 1 2.2" rotation="0 100 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-      </a-entity>
-      <a-entity id="group-point3" scale="0 0 0">
-        <a-entity id="linkAvzHerbario" spot="linkto:#fondo-salon-audiciones;spotgroup:group-point4" layout="type: line; margin: 1.5" position="-8 1 -4" rotation="-30 60 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
-        <a-entity id="linkRetroHerbario" spot="linkto:#fondo-entrada-secundaria;spotgroup:group-point2" layout="type: line; margin: 1.5" position="-8 0 -4" rotation="-30 60 0" template="src: #link" data-src="#desviacion_izq" data-thumb="#desviacion_izq" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
-        <a-entity id="salaPaileria" layout="type: line; margin: 1.5" position="0.7 1 8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <a-entity id="plantasMedicinales" layout="type: line; margin: 1.5" position="4.5 0.2 -5" rotation="0 -30 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-      </a-entity>
-      <a-entity id="group-point4" scale="0 0 0">
-        <a-entity id="salon-audiciones-hotspot" layout="type: line; margin: 1.5" position="-4.3 0.7 8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <a-entity id="linkAvzSalon" spot="linkto:#fondo-horno;spotgroup:group-point5" layout="type: line; margin: 1.5" position="3 -1 -6" rotation="10 -10 -0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
-        <a-entity id="linkRetroSalon" spot="linkto:#fondo-herbario;spotgroup:group-point3" layout="type: line; margin: 1.5" position="1.5 -1 -6" rotation="10 -10 0" template="src: #link" data-src="#desviacion_izq" data-thumb="#desviacion_izq" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
-      </a-entity>
-      <a-entity id="group-point5" scale="0 0 0">
-        <a-entity id="horno" layout="type: line; margin: 1.5" position="0.1 -0.5 6" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <a-entity id="molinoPiedra" layout="type: line; margin: 1.5" position="7.95 0.5 3.5" rotation="0 -110 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
-        <a-entity id="linkRetroHorno" spot="linkto:#fondo-salon-audiciones;spotgroup:group-point4" layout="type: line; margin: 1.5" position="-6 -1 -1" rotation="0 70 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
-        <a-entity id="entrada" spot="linkto:#fondo-entrada-principal;spotgroup:group-point1" layout="type: line; margin: 1.5" position="6 0 -1" rotation="0 80 0" template="src: #link" data-src="#inicioRecorrido" data-thumb="#inicioRecorrido" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
-      </a-entity>
-    </a-entity>
+        <a-entity id="spots" hotspots>
+            <a-entity id="group-point1">
+                <!--Punto Zona Bajo Imprenta-->
+                <a-entity id="salaMadera" layout="type: line; margin: 1.5" position="-1.5 -1 -8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <!--Punto Lanas y Tejidos-->
+                <a-entity id="salaTejidos" layout="type: line; margin: 1.5" position="5.1 -0.8 -8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <!--Punto Imprenta-->
+                <a-entity id="salaImprenta" layout="type: line; margin: 1.5" position="-1.1 4 -8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <!--Punto Herreria-->
+                <a-entity id="salaHerreria" layout="type: line; margin: 1.5" position="3.5 -2.3 3.4" rotation="0 90 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <!--Punto PajaToquilla-->
+                <a-entity id="salaPajaToquilla" layout="type: line; margin: 1.5" position="5 -1.8 7.7" rotation="0 80 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <!--Punto Moverse-->
+                <a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-entrada-secundaria;spotgroup:group-point2" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
+                <!--<a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-herbario;spotgroup:group-point3" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>-->
+                <!--<a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-horno;spotgroup:group-point5" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>-->
+                <!--<a-entity id="linkAvzSalaPrincipal" spot="linkto:#fondo-salon-audiciones;spotgroup:group-point4" layout="type: line; margin: 1.5" position="1.5 -4 8" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>-->
+            </a-entity>
+            <a-entity id="group-point2" scale="0 0 0">
+                <a-entity id="linkAvzSalaSecundaria" spot="linkto:#fondo-herbario;spotgroup:group-point3" layout="type: line; margin: 1.5" position="-0.1 -0.8 5" rotation="60 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
+                <a-entity id="linkRetroSalaSecundaria" spot="linkto:#fondo-entrada-principal;spotgroup:group-point1" layout="type: line; margin: 1.5" position="-1 -1.8 -6" rotation="15 0 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
+                <a-entity id="fuente" layout="type: line; margin: 1.5" position="-1 3.3 -6" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <a-entity id="salaBarniz" layout="type: line; margin: 1.5" position="-6 1 2.2" rotation="0 100 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+            </a-entity>
+            <a-entity id="group-point3" scale="0 0 0">
+                <a-entity id="linkAvzHerbario" spot="linkto:#fondo-salon-audiciones;spotgroup:group-point4" layout="type: line; margin: 1.5" position="-8 1 -4" rotation="-30 60 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
+                <a-entity id="linkRetroHerbario" spot="linkto:#fondo-entrada-secundaria;spotgroup:group-point2" layout="type: line; margin: 1.5" position="-8 0 -4" rotation="-30 60 0" template="src: #link" data-src="#desviacion_izq" data-thumb="#desviacion_izq" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
+                <a-entity id="salaPaileria" layout="type: line; margin: 1.5" position="0.7 1 8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <a-entity id="plantasMedicinales" layout="type: line; margin: 1.5" position="4.5 0.2 -5" rotation="0 -30 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+            </a-entity>
+            <a-entity id="group-point4" scale="0 0 0">
+                <a-entity id="salon-audiciones-hotspot" layout="type: line; margin: 1.5" position="-4.3 0.7 8" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <a-entity id="linkAvzSalon" spot="linkto:#fondo-horno;spotgroup:group-point5" layout="type: line; margin: 1.5" position="3 -1 -6" rotation="10 -10 -0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
+                <a-entity id="linkRetroSalon" spot="linkto:#fondo-herbario;spotgroup:group-point3" layout="type: line; margin: 1.5" position="1.5 -1 -6" rotation="10 -10 0" template="src: #link" data-src="#desviacion_izq" data-thumb="#desviacion_izq" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
+            </a-entity>
+            <a-entity id="group-point5" scale="0 0 0">
+                <a-entity id="horno" layout="type: line; margin: 1.5" position="0.1 -0.5 6" rotation="0 0 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <a-entity id="molinoPiedra" layout="type: line; margin: 1.5" position="7.95 0.5 3.5" rotation="0 -110 0" template="src: #link" data-src="#fotografia" data-thumb="#fotografia" sound="on: mouseenter; src: #mouseenter-sound"></a-entity>
+                <a-entity id="linkRetroHorno" spot="linkto:#fondo-salon-audiciones;spotgroup:group-point4" layout="type: line; margin: 1.5" position="-6 -1 -1" rotation="0 70 0" template="src: #link" data-src="#desviacion" data-thumb="#desviacion" sound="on: mouseenter; src: #hotspot-sound-regresar"></a-entity>
+                <a-entity id="entrada" spot="linkto:#fondo-entrada-principal;spotgroup:group-point1" layout="type: line; margin: 1.5" position="6 0 -1" rotation="0 80 0" template="src: #link" data-src="#inicioRecorrido" data-thumb="#inicioRecorrido" sound="on: mouseenter; src: #hotspot-sound"></a-entity>
+            </a-entity>
+        </a-entity>
 
-    <a-text id="textoCarpinteria" font="kelsonsans" value="" width="10" position="-2.7 0.25 -7" rotation="0 0 0"
-    ></a-text>
+        <a-text id="textoCarpinteria" font="kelsonsans" value="" width="10" position="-2.7 0.25 -7" rotation="0 0 0"></a-text>
 
-    <a-text id="textoTejidos" font="kelsonsans" value="" width="10" position="2 0.4 -6" rotation="0 0 0"
-    ></a-text>
+        <a-text id="textoTejidos" font="kelsonsans" value="" width="10" position="2 0.4 -6" rotation="0 0 0"></a-text>
 
-    <a-text id="textoImprenta" font="kelsonsans" value="" width="10" position="-3.5 4.5 -6" rotation="0 0 0"
-    ></a-text>
+        <a-text id="textoImprenta" font="kelsonsans" value="" width="10" position="-3.5 4.5 -6" rotation="0 0 0"></a-text>
 
-    <a-text id="textoHerreria" font="kelsonsans" value="" width="10" position="3.5 -1.1 2.5" rotation="0 -90 0"
-    ></a-text>
+        <a-text id="textoHerreria" font="kelsonsans" value="" width="10" position="3.5 -1.1 2.5" rotation="0 -90 0"></a-text>
 
-    <a-text id="textoPajaToquilla" font="kelsonsans" value="" width="10" position="4 -2.3 5" rotation="0 -100 0"
-    ></a-text>
+        <a-text id="textoPajaToquilla" font="kelsonsans" value="" width="10" position="4 -2.3 5" rotation="0 -100 0"></a-text>
 
-    <a-text id="textoBarniz" font="kelsonsans" value="" width="10" position="-4 -0.3 3" rotation="0 120 0"
-    ></a-text>
-    
-    <a-text id="textoFuente" font="kelsonsans" value="" width="10" position="-3 2.2 -7" rotation="0 0 0"
-    ></a-text>
+        <a-text id="textoBarniz" font="kelsonsans" value="" width="10" position="-4 -0.3 3" rotation="0 120 0"></a-text>
 
-    <a-text id="textoSalon" font="kelsonsans" value="" width="5" position="-1.1 0.9 4" rotation="0 145 0"
-    ></a-text>
+        <a-text id="textoFuente" font="kelsonsans" value="" width="10" position="-3 2.2 -7" rotation="0 0 0"></a-text>
 
-    <a-text id="textoSalon2" font="kelsonsans" value="" width="5" position="-1.25 1.2 4" rotation="0 145 0"
-    ></a-text>
+        <a-text id="textoSalon" font="kelsonsans" value="" width="5" position="-1.1 0.9 4" rotation="0 145 0"></a-text>
 
-    <a-text id="textoPaileria" font="kelsonsans" value="" width="5" position="0.7 0.85 3" rotation="0 180 0"
-    ></a-text>
+        <a-text id="textoSalon2" font="kelsonsans" value="" width="5" position="-1.25 1.2 4" rotation="0 145 0"></a-text>
 
-    <a-text id="textoPlantas" font="kelsonsans" value="" width="5" position="1.1 0.65 -3" rotation="0 -40 0"
-    ></a-text>
+        <a-text id="textoPaileria" font="kelsonsans" value="" width="5" position="0.7 0.85 3" rotation="0 180 0"></a-text>
 
-    <a-text id="textoAvzEntradaPrincipal" font="kelsonsans" value="" width="5" position="0.9 -1 3" rotation="0 -180 0"
-    ></a-text>
+        <a-text id="textoPlantas" font="kelsonsans" value="" width="5" position="1.1 0.65 -3" rotation="0 -40 0"></a-text>
 
-    <a-text id="textoAvzEntradaSecundaria" font="kelsonsans" value="" width="5" position="0.35 0.1 3" rotation="0 -180 0"
-    ></a-text>
+        <a-text id="textoAvzEntradaPrincipal" font="kelsonsans" value="" width="5" position="0.9 -1 3" rotation="0 -180 0"></a-text>
 
-    <a-text id="textoRetroEntradaSecundaria" font="kelsonsans" value="" width="5" position="-1.1 -0.3 -3" rotation="0 0 0"
-    ></a-text>
+        <a-text id="textoAvzEntradaSecundaria" font="kelsonsans" value="" width="5" position="0.35 0.1 3" rotation="0 -180 0"></a-text>
 
-    <a-text id="textoAvzHerbario" font="kelsonsans" value="" width="15" position="-8 2.3 -2.6" rotation="0 60 0"
-    ></a-text>
+        <a-text id="textoRetroEntradaSecundaria" font="kelsonsans" value="" width="5" position="-1.1 -0.3 -3" rotation="0 0 0"></a-text>
 
-    <a-text id="textoRetroHerbario" font="kelsonsans" value="" width="15" position="-8 -1.1 -2" rotation="0 60 0"
-    ></a-text>
+        <a-text id="textoAvzHerbario" font="kelsonsans" value="" width="15" position="-8 2.3 -2.6" rotation="0 60 0"></a-text>
 
-    <a-text id="textoAvzSalon" font="kelsonsans" value="" width="10" position="2.1 0.2 -6" rotation="10 -10 -0"
-    ></a-text>
+        <a-text id="textoRetroHerbario" font="kelsonsans" value="" width="15" position="-8 -1.1 -2" rotation="0 60 0"></a-text>
 
-    <a-text id="textoRetroSalon" font="kelsonsans" value="" width="10" position="0.2 -2.1 -6" rotation="10 -10 0"
-    ></a-text>
+        <a-text id="textoAvzSalon" font="kelsonsans" value="" width="10" position="2.1 0.2 -6" rotation="10 -10 -0"></a-text>
 
-    <a-text id="textoEntrada" font="kelsonsans" value="" width="10" position="5 -1 -1.45" rotation="0 -80 0"
-    ></a-text>
+        <a-text id="textoRetroSalon" font="kelsonsans" value="" width="10" position="0.2 -2.1 -6" rotation="10 -10 0"></a-text>
 
-    <a-text id="textoRetroHorno" font="kelsonsans" value="" width="10" position="-6 0.2 0.2" rotation="0 70 0"
-    ></a-text>
+        <a-text id="textoEntrada" font="kelsonsans" value="" width="10" position="5 -1 -1.45" rotation="0 -80 0"></a-text>
 
-    <a-text id="textoHorno" font="kelsonsans" value="" width="10" position="1.6 0.6 4" rotation="0 -180 0"
-    ></a-text>
+        <a-text id="textoRetroHorno" font="kelsonsans" value="" width="10" position="-6 0.2 0.2" rotation="0 70 0"></a-text>
 
-    <a-text id="textoMolino" font="kelsonsans" value="" width="15" position="7.95 1.8 1" rotation="0 -100 0"
-    ></a-text>
+        <a-text id="textoHorno" font="kelsonsans" value="" width="10" position="1.6 0.6 4" rotation="0 -180 0"></a-text>
 
-    <!-- Camera + cursor. -->
-    <a-entity camera look-controls rotation-reader>
-      <a-cursor
-        id="cursor"
-        position="0 0 -.6"
-        color="red"
-        animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
-        animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
-        event-set__mouseenter="_event: mouseenter; color: springgreen"
-        event-set__mouseleave="_event: mouseleave; color: red"
-        raycaster="objects: .link"></a-cursor>
-    </a-entity>
+        <a-text id="textoMolino" font="kelsonsans" value="" width="15" position="7.95 1.8 1" rotation="0 -100 0"></a-text>
 
-  </a-scene>
+        <!-- Camera + cursor. -->
+        <a-entity id="rotationCamera" position="0 0 0" camera look-controls="pointerLockEnabled: true;" rotation-reader mouse-cursor>
+            <a-cursor id="cursor" position="0 0 -.6" color="red" animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150" animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500" event-set__mouseenter="_event: mouseenter; color: springgreen"
+                event-set__mouseleave="_event: mouseleave; color: red" raycaster=" objects: .link "></a-cursor>
+        </a-entity>
+
+    </a-scene>
 </body>
+
 </html>
